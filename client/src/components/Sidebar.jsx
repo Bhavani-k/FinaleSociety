@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { MdOutlineClose, MdMenu } from "react-icons/md";
+import { MdOutlineClose, MdMenu, MdOutlineDashboard } from "react-icons/md";
+
 import { FiHome, FiActivity, FiLogIn } from "react-icons/fi";
 
 const Sidebar = () => {
@@ -27,17 +28,20 @@ const Sidebar = () => {
                 <MdMenu />
               </button>
             </div>
-            <Link
-              to={`/${id}/family`}
-              className="text-white flex items-center mb-2"
-            >
-              <FiHome className="mr-2" />
+            <Link to={`/${id}`} className="text-white flex items-center mb-2">
+              <MdOutlineDashboard className="mr-2" />
             </Link>
             <Link
-              to={`/${id}/activity`}
+              to={`/${id}/activityList`}
               className="text-white flex items-center mb-2"
             >
               <FiActivity className="mr-2" />
+            </Link>
+            <Link
+              to={`/${id}/familyList`}
+              className="text-white flex items-center mb-2"
+            >
+              <FiHome className="mr-2" />
             </Link>
           </div>
           <div>
@@ -57,19 +61,23 @@ const Sidebar = () => {
                 <MdOutlineClose />
               </button>
             </div>
-            <Link
-              to={`/${id}/family`}
-              className="text-white flex items-center mb-2"
-            >
-              <FiHome className="mr-2" />
-              Families
+            <Link to={`/${id}/`} className="text-white flex items-center mb-2">
+              <MdOutlineDashboard className="mr-2" />
+              Dashboard
             </Link>
             <Link
-              to={`/${id}/activity`}
+              to={`/${id}/activityList`}
               className="text-white flex items-center mb-2"
             >
               <FiActivity className="mr-2" />
               Activities
+            </Link>
+            <Link
+              to={`/${id}/familyList`}
+              className="text-white flex items-center mb-2"
+            >
+              <FiHome className="mr-2" />
+              Families
             </Link>
           </div>
           <div>

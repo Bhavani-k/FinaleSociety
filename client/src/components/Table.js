@@ -2,7 +2,7 @@
 import React from "react";
 import { useTable } from "react-table";
 
-const Table = ({ columns, data }) => {
+const Table = ({ columns, data, onViewClick }) => {
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable({ columns, data });
 
@@ -23,7 +23,11 @@ const Table = ({ columns, data }) => {
         {rows.map((row) => {
           prepareRow(row);
           return (
-            <tr {...row.getRowProps()} className="border-b">
+            <tr
+              {...row.getRowProps()}
+              onClick={() => onViewClick(row.original.id)}
+              className="border-b cursor-pointer"
+            >
               {row.cells.map((cell) => (
                 <td {...cell.getCellProps()} className="p-2 text-left">
                   {cell.render("Cell")}
