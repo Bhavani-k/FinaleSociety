@@ -5,7 +5,7 @@ const familySchema = new mongoose.Schema({
     required: true,
   },
   members: {
-    type: String,
+    type: [String],
     required: true,
   },
   flatNumber: {
@@ -18,6 +18,11 @@ const familySchema = new mongoose.Schema({
   },
   contactNumber: {
     type: String,
+    required: true,
+  },
+  society: {
+    type: mongoose.Schema.ObjectId,
+    ref: "Society",
     required: true,
   },
   email: {

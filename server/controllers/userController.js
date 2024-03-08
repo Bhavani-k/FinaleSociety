@@ -90,7 +90,7 @@ exports.changePassword = async (req, res, next) => {
 exports.updateUser = async (req, res, next) => {
   const userId = req.user.id;
   const user = await User.findById(userId);
-  const { username, currentProject, projects, email } = req.body;
+  const { username, email, society } = req.body;
 
   if (username) {
     const fetchedUsername = await User.findOne({ username });
@@ -106,12 +106,14 @@ exports.updateUser = async (req, res, next) => {
     }
     user.email = email;
   }
-  if (currentProject) {
-    user.currentProject = currentProject;
+  if (society) {
+    const fetchedSociety = await User.findOne({ society });
+    if (fetchedSociety) {
+      return next(new CustomError(stringConstants.societyExists, 400));
+    }
+    user.society = society;
   }
-  if (projects) {
-    user.projects = projects;
-  }
+
   await user.save();
 
   res.status(200).json({

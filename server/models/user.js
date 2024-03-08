@@ -3,6 +3,7 @@ const validator = require("validator");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
+const { Types } = mongoose;
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -24,6 +25,11 @@ const userSchema = new mongoose.Schema({
     enum: ["admin", "checker", "familyHead"],
     default: "admin",
     required: true,
+  },
+  society: {
+    type: mongoose.Schema.ObjectId,
+    ref: "Society",
+    default: null,
   },
 });
 

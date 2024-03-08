@@ -1,20 +1,15 @@
-// activity.model.js
+// invoice.model.js
 const mongoose = require("mongoose");
 const { Types } = mongoose;
 
-const activitySchema = new mongoose.Schema({
+const invoiceSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
   },
-  description: {
-    type: String,
-  },
-  cost: {
+  amount: {
     type: Number,
-  },
-  costCategory: {
-    type: String,
+    required: true,
   },
   date: {
     type: Date,
@@ -25,12 +20,14 @@ const activitySchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
-  families: [
-    {
-      type: mongoose.Schema.ObjectId,
-      ref: "Family",
-    },
-  ],
+  approvedBy: {
+    type: mongoose.Schema.ObjectId,
+    ref: "User",
+  },
+  isApproved: {
+    type: Boolean,
+    default: false,
+  },
   society: {
     type: mongoose.Schema.ObjectId,
     ref: "Society",
@@ -38,4 +35,4 @@ const activitySchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("Activity", activitySchema);
+module.exports = mongoose.model("Invoice", invoiceSchema);
