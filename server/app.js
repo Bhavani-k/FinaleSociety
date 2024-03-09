@@ -15,10 +15,12 @@ const user = require("./routes/user");
 const society = require("./routes/society");
 const family = require("./routes/family");
 const activity = require("./routes/activity");
+const invoice = require("./routes/invoice");
 
 app.use("/api/v1", user);
 app.use("/api/v1", society);
 app.use("/api/v1", family);
 app.use("/api/v1", activity);
+app.use("/api/v1", invoice);
 
 module.exports = app;

@@ -1,6 +1,5 @@
 // activity.model.js
 const mongoose = require("mongoose");
-const { Types } = mongoose;
 
 const activitySchema = new mongoose.Schema({
   name: {
@@ -35,6 +34,10 @@ const activitySchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: "Society",
     required: true,
+  },
+  invoice: {
+    type: mongoose.Schema.ObjectId,
+    ref: "Invoice",
   },
 });
 

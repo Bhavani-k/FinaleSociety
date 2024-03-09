@@ -1,4 +1,5 @@
 const User = require("../models/user");
+const Society = require("../models/society");
 const CustomError = require("../utilis/customError");
 const stringConstants = require("../utilis/strringConstants");
 const cookieToken = require("../utilis/cookieToken");
@@ -124,64 +125,56 @@ exports.updateUser = async (req, res, next) => {
 };
 
 exports.createUser = async (req, res, next) => {
-  const { role, currentProject } = req.user;
-  let userRole = "projectManager";
-  if (role == "projectManager") {
-    userRole = "dataEntry";
-  }
+  const admin = req.user;
+  const { email } = req.body;
 
-  const { username, email, password } = req.body;
-
-  let projects = [];
-  projects.push(currentProject);
-
-  if (!username) {
-    return next(new CustomError(stringConstants.noUsername, 400));
-  }
   if (!email) {
     return next(new CustomError(stringConstants.noEmail, 400));
   }
-  if (!password) {
-    return next(new CustomError(stringConstants.noPassword, 400));
-  }
-  if (!currentProject && userRole == "dataEntry") {
-    return next(new CustomError(stringConstants.noProjectSelected, 400));
-  }
 
-  const fetchedUsername = await User.findOne({ username });
   const fetchedEmail = await User.findOne({ email });
-  let user;
-
-  if (fetchedEmail && fetchedUsername) {
-    user = await User.findByIdAndUpdate(
-      fetchedUsername._id,
-      {
-        $addToSet: { projects: currentProject, currentProject: currentProject },
-      },
-      {
-        new: true,
-        runValidators: true,
-        useFindAndModify: false,
-      }
-    );
-  } else {
-    if (fetchedEmail) {
-      return next(new CustomError(stringConstants.emailExsist, 400));
-    }
-    if (fetchedUsername) {
-      return next(new CustomError(stringConstants.usernameExsist, 400));
-    }
-
-    user = await User.create({
-      username,
-      email,
-      currentProject,
-      password,
-      role: userRole,
-      projects,
-    });
-    // console.log(user)
+  if (fetchedEmail) {
+    return next(new CustomError(stringConstants.emailExsist, 400));
   }
+  const username = email;
+  const password = "123456";
+  const society = admin.society;
+  const role = "family";
+
+  const user = await User.create({
+    username,
+    email,
+    password,
+    society,
+    role,
+  });
 
   res.status(200).json(user);
+};
+
+exports.getSocietyUsersEmails = async (req, res, next) => {
+  const { societyId } = req.params;
+  console.log(req.params);
+
+  try {
+    // Check if the society exists
+    const society = await Society.findById(societyId);
+    if (!society) {
+      return next(new CustomError(stringConstants.societyNotFound, 404));
+    }
+
+    // Fetch all users belonging to the society
+    const users = await User.find({ society: societyId });
+
+    // Extract email IDs from the users
+    const userEmails = users.map((user) => user.email);
+
+    res.status(200).json({
+      success: true,
+      data: userEmails,
+    });
+  } catch (error) {
+    console.error(error);
+    next(new CustomError(stringConstants.serverError, 500));
+  }
 };

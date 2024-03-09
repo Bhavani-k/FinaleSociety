@@ -14,11 +14,15 @@ exports.createFamily = async (req, res, next) => {
     if (!society) {
       return next(new CustomError(stringConstants.societyNotFound, 404));
     }
+    // Find user IDs corresponding to the provided email addresses
+    const memberIds = await User.find({ email: { $in: members } }).distinct(
+      "_id"
+    );
 
     // Create the family
     const family = await Family.create({
       name,
-      members,
+      members: memberIds,
       flatNumber,
       numberOfResidents,
       head,

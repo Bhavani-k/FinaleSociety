@@ -10,7 +10,6 @@ const userSchema = new mongoose.Schema({
     type: String,
     unique: [true, "Usernames must be unique"],
     required: [true, "Please provide name"],
-    default: "",
   },
   email: {
     type: String,
@@ -18,13 +17,12 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    minlength: [, 6, "Passwords must conatins atlest 6 characters"],
+    minlength: [6, "Passwords must conatins atlest 6 characters"],
     required: [true, "Please provide password"],
-    default: "123456",
   },
   role: {
     type: String,
-    enum: ["admin", "checker", "familyHead"],
+    enum: ["admin", "checker", "family"],
     default: "admin",
     required: true,
   },
