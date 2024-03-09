@@ -14,9 +14,11 @@ app.use(cookieParser());
 const user = require("./routes/user");
 const society = require("./routes/society");
 const family = require("./routes/family");
+const activity = require("./routes/activity");
 
 app.use("/api/v1", user);
 app.use("/api/v1", society);
 app.use("/api/v1", family);
+app.use("/api/v1", activity);
 
 module.exports = app;

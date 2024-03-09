@@ -34,6 +34,10 @@ const familySchema = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: "Activity",
       },
+      cost: {
+        type: Number,
+        default: 0,
+      },
       paid: {
         type: Boolean,
         default: false,

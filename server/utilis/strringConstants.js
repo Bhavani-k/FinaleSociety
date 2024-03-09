@@ -20,6 +20,7 @@ const stringConstants = {
   societyNotFound: "There is no such society, Please provide correct Id",
   serverError: "Internal server error",
   noFamily: "No Family is found with this id",
+  activityNotFound: "No Activity found with this id",
 };
 
 module.exports = stringConstants;

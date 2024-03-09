@@ -70,3 +70,22 @@ exports.updateSociety = async (req, res, next) => {
     next(new CustomError(stringConstants.serverError, 500));
   }
 };
+
+exports.getOneSociety = async (req, res, next) => {
+  const societyId = req.params.id;
+
+  try {
+    const society = await Society.findById(societyId);
+
+    if (!society) {
+      return next(new CustomError(stringConstants.societyNotFound, 404));
+    }
+
+    res.status(200).json({
+      success: true,
+      data: society,
+    });
+  } catch (error) {
+    next(new CustomError(stringConstants.serverError, 500));
+  }
+};
