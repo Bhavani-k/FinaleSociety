@@ -5,19 +5,22 @@ const familySchema = new mongoose.Schema({
     required: true,
   },
   members: {
-    type: [String],
+    type: [mongoose.Schema.ObjectId],
+    ref: "User",
     required: true,
+    default: [],
   },
   flatNumber: {
     type: String,
     required: true,
+    unique: true,
   },
   numberOfResidents: {
     type: Number,
-    required: true,
   },
-  contactNumber: {
-    type: String,
+  head: {
+    type: mongoose.Schema.ObjectId,
+    ref: "User",
     required: true,
   },
   society: {
@@ -25,10 +28,18 @@ const familySchema = new mongoose.Schema({
     ref: "Society",
     required: true,
   },
-  email: {
-    type: String,
-    unique: true,
-  },
+  activitiesPayment: [
+    {
+      activity: {
+        type: mongoose.Schema.ObjectId,
+        ref: "Activity",
+      },
+      paid: {
+        type: Boolean,
+        default: false,
+      },
+    },
+  ],
 });
 
 module.exports = mongoose.model("Family", familySchema);

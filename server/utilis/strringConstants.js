@@ -17,6 +17,9 @@ const stringConstants = {
   updateExsist: "Today's update already exists, reupdate for further changes",
   noSocietyName: "Please provide society name",
   societyExists: "society name already exsist, try different name",
+  societyNotFound: "There is no such society, Please provide correct Id",
+  serverError: "Internal server error",
+  noFamily: "No Family is found with this id",
 };
 
 module.exports = stringConstants;

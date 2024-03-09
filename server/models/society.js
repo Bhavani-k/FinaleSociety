@@ -23,7 +23,18 @@ const societySchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
-  // Add any other relevant fields for a society
+  families: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: "Family",
+    },
+  ],
+  activities: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: "Activity",
+    },
+  ],
 });
 
 module.exports = mongoose.model("Society", societySchema);

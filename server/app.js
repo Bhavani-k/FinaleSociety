@@ -13,8 +13,10 @@ app.use(cookieParser());
 
 const user = require("./routes/user");
 const society = require("./routes/society");
+const family = require("./routes/family");
 
 app.use("/api/v1", user);
 app.use("/api/v1", society);
+app.use("/api/v1", family);
 
 module.exports = app;

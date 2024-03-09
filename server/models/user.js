@@ -10,6 +10,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     unique: [true, "Usernames must be unique"],
     required: [true, "Please provide name"],
+    default: "",
   },
   email: {
     type: String,
@@ -19,6 +20,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     minlength: [, 6, "Passwords must conatins atlest 6 characters"],
     required: [true, "Please provide password"],
+    default: "123456",
   },
   role: {
     type: String,
@@ -32,7 +34,13 @@ const userSchema = new mongoose.Schema({
     default: null,
   },
 });
-
+// Set default username to be the same as the email
+userSchema.pre("save", function (next) {
+  if (!this.username) {
+    this.username = this.email;
+  }
+  next();
+});
 // encrypt password before saving
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {
