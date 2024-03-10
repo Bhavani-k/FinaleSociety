@@ -1,13 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useSelector, useDispatch } from "react-redux";
+import * as AuthActions from "../store/auth/Actions";
 
 const Signup = () => {
   const [signupSuccess, setSignupSuccess] = useState(false);
   const [societyName, setSocietyName] = useState("");
+  const dispatch = useDispatch();
+  const signUp = (data) => dispatch(AuthActions.signUp(data));
+  const auth = useSelector((state) => state.auth);
+
+  console.log(auth);
 
   const formikSignup = useFormik({
     initialValues: {
@@ -17,7 +24,9 @@ const Signup = () => {
     },
     validationSchema: Yup.object({
       email: Yup.string().email("Invalid email address").required("Required"),
-      password: Yup.string().required("Required"),
+      password: Yup.string()
+        .required("Required")
+        .min(6, "Password must be at least 6 characters long"),
       confirmPassword: Yup.string()
         .oneOf([Yup.ref("password"), null], "Passwords must match")
         .required("Required"),
@@ -26,9 +35,22 @@ const Signup = () => {
       // Handle signup logic here
       console.log("Signup form submitted with values:", values);
       // Simulating signup success
-      setSignupSuccess(true);
+      signUp({
+        username: values.email,
+        email: values.email,
+        password: values.password,
+      });
     },
   });
+
+  useEffect(() => {
+    if (auth.signUpSuccess === true) {
+      setSignupSuccess(true);
+    }
+    if (auth.signUpFailure == true) {
+      console.log(error);
+    }
+  }, [auth?.signUpSuccess]);
 
   const formikSociety = useFormik({
     initialValues: {

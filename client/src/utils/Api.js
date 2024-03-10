@@ -20,6 +20,8 @@ export const fetchData = async (endpoint, options = {}) => {
 
 export const postData = async (endpoint, data, options = {}) => {
   try {
+    console.log(data);
+    console.log(endpoint);
     const token = localStorage.getItem("token");
     console.log("token from api", token);
     const response = await axios.post(`${BASE_URL}/${endpoint}`, data, {
@@ -29,6 +31,7 @@ export const postData = async (endpoint, data, options = {}) => {
       },
       ...options,
     });
+    console.log(response);
     return response.data;
   } catch (error) {
     throw error;

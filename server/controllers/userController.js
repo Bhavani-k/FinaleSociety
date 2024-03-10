@@ -5,13 +5,13 @@ const stringConstants = require("../utilis/strringConstants");
 const cookieToken = require("../utilis/cookieToken");
 
 exports.signup = async (req, res, next) => {
-  const { username, email, password } = req.body;
+  let { username, email, password } = req.body;
 
-  if (!username) {
-    return next(new CustomError(stringConstants.noUsername, 400));
-  }
   if (!email) {
     return next(new CustomError(stringConstants.noEmail, 400));
+  }
+  if (!username) {
+    username = email;
   }
   if (!password) {
     return next(new CustomError(stringConstants.noPassword, 400));
@@ -31,6 +31,7 @@ exports.signup = async (req, res, next) => {
     email,
     password,
   });
+  console.log(user);
 
   cookieToken(user, res);
 };
