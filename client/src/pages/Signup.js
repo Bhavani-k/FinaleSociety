@@ -52,7 +52,7 @@ const Signup = () => {
       setSignupSuccess(true);
     }
     if (auth.signUpFailure == true) {
-      console.log(error);
+      console.log("error");
     }
   }, [auth?.signUpSuccess]);
 

@@ -5,8 +5,15 @@ const CustomError = require("../utilis/customError");
 const stringConstants = require("../utilis/strringConstants");
 
 exports.createFamily = async (req, res, next) => {
-  const { name, members, flatNumber, numberOfResidents, head, societyId } =
-    req.body;
+  const {
+    name,
+    members,
+    flatNumber,
+    numberOfResidents,
+    head,
+    societyId,
+    contact,
+  } = req.body;
 
   try {
     // Check if the society exists
@@ -18,6 +25,11 @@ exports.createFamily = async (req, res, next) => {
     const memberIds = await User.find({ email: { $in: members } }).distinct(
       "_id"
     );
+    // Find the user ID corresponding to the head's email
+    const headUser = await User.findOne({ email: head });
+    if (!headUser) {
+      return next(new CustomError(stringConstants.headNotFound, 404));
+    }
 
     // Create the family
     const family = await Family.create({
@@ -25,7 +37,8 @@ exports.createFamily = async (req, res, next) => {
       members: memberIds,
       flatNumber,
       numberOfResidents,
-      head,
+      head: headUser._id,
+      contact,
       society: societyId,
     });
 
@@ -49,22 +62,58 @@ exports.updateFamily = async (req, res, next) => {
   const updateData = req.body;
 
   try {
-    const family = await Family.findByIdAndUpdate(
-      familyId,
-      { $set: updateData },
-      { new: true }
-    );
+    // const family = await Family.findByIdAndUpdate(
+    //   familyId,
+    //   { $set: updateData },
+    //   { new: true }
+    // );
+
+    const family = await Family.findById(familyId);
 
     if (!family) {
       return next(new CustomError(stringConstants.familyNotFound, 404));
     }
+    let amount = family.totalAmountToPay;
+    if (updateData.activitiesPayment) {
+      const oldActivitiesPayment = family.activitiesPayment || [];
+      console.log(":::::::::::::::::::::::::::");
+
+      for (const updatedPayment of updateData.activitiesPayment) {
+        let correspondingOldPayment = oldActivitiesPayment.filter(
+          (oldPayment) => oldPayment._id === updatedPayment._id
+        );
+        console.log(correspondingOldPayment);
+        console.log(">>//////////////////////..");
+        if (
+          correspondingOldPayment &&
+          correspondingOldPayment.paid !== updatedPayment.paid
+        ) {
+          const costDifference = updatedPayment.paid
+            ? updatedPayment.cost
+            : -updatedPayment.cost;
+          console.log(">>>>>>>>>>>>>>>>>>>>>..");
+          console.log(costDifference);
+          amount += costDifference;
+        }
+      }
+    }
+    const updatedFamily = await Family.findByIdAndUpdate(
+      familyId,
+      { $set: updateData },
+      { new: true }
+    );
+    console.log(amount);
+    if (amount < 0) amount = 0;
+    family.totalAmountToPay = amount;
+    await family.save();
 
     res.status(200).json({
       success: true,
       message: "Family updated successfully",
-      data: family,
+      data: updatedFamily,
     });
   } catch (error) {
+    console.log(error);
     next(new CustomError(stringConstants.serverError, 500));
   }
 };

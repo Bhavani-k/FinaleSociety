@@ -8,6 +8,7 @@ const {
   changePassword,
   updateUser,
   getSocietyUsersEmails,
+  getAllUserEmails,
 } = require("../controllers/userController");
 const { isLoggedIn, customRole } = require("../middlewares/user");
 
@@ -26,5 +27,6 @@ router
 router
   .route("/getSocietyUsersEmails/:societyId")
   .get(isLoggedIn, getSocietyUsersEmails);
+router.route("/getAllUserEmails").get(isLoggedIn, getAllUserEmails);
 
 module.exports = router;

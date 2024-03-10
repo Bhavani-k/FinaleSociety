@@ -179,3 +179,21 @@ exports.getSocietyUsersEmails = async (req, res, next) => {
     next(new CustomError(stringConstants.serverError, 500));
   }
 };
+
+exports.getAllUserEmails = async (req, res, next) => {
+  try {
+    // Fetch all users
+    const users = await User.find();
+
+    // Extract email IDs from the users
+    const userEmails = users.map((user) => user.email);
+
+    res.status(200).json({
+      success: true,
+      data: userEmails,
+    });
+  } catch (error) {
+    console.error(error);
+    next(new CustomError(stringConstants.serverError, 500));
+  }
+};

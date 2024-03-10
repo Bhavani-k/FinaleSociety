@@ -22,10 +22,11 @@ const Table = ({ columns, data, onViewClick }) => {
       <tbody {...getTableBodyProps()}>
         {rows.map((row) => {
           prepareRow(row);
+          const rowId = row.original._id; // Extract _id from data
           return (
             <tr
               {...row.getRowProps()}
-              onClick={() => onViewClick(row.original.id)}
+              onClick={() => onViewClick(rowId)}
               className="border-b cursor-pointer"
             >
               {row.cells.map((cell) => (

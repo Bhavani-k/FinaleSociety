@@ -1,17 +1,20 @@
-import React, { useState } from "react";
+import React, { useDebugValue, useEffect, useState } from "react";
 import { Table } from "../components";
 import Modal from "react-modal";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { MdOutlineClose, MdMenu } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
+import * as SocietyActions from "../store/society/actions";
+import { useSelector, useDispatch } from "react-redux";
+import { useParams } from "react-router-dom";
 
 const data = [
   {
     familyName: "Gupta family",
     flatNumber: "A101",
     numResidents: 4,
-    contactDetails: "+1 123 456 7890",
+    contact: "+1 123 456 7890",
     email: "john.doe@example.com",
     members: "ganesh, ramu, akku",
     totalAmountToPay: 2000, // New column
@@ -21,7 +24,7 @@ const data = [
     familyName: "bansal",
     flatNumber: "B202",
     numResidents: 3,
-    contactDetails: "+1 987 654 3210",
+    contact: "+1 987 654 3210",
     email: "jane.smith@example.com",
     members: "ganesh, ramu, akku",
     totalAmountToPay: 1500, // New column
@@ -33,18 +36,18 @@ const data = [
 const initialValues = {
   familyName: "",
   flatNumber: "",
-  numResidents: "",
-  contactDetails: "",
+  // numResidents: "",
+  contact: "",
   email: "",
-  members: "",
+  // members: "",
 };
 
 const validationSchema = Yup.object().shape({
   familyName: Yup.string().required("Family Name is required"),
   flatNumber: Yup.string().required("Flat Number is required"),
-  numResidents: Yup.number().required("Number of Residents is required"),
-  contactDetails: Yup.string().required("Contact Details is required"),
-  members: Yup.string().required("Family members is required"),
+  // numResidents: Yup.number().required("Number of Residents is required"),
+  contact: Yup.string().required("Contact Details is required"),
+  // members: Yup.string().required("Family members is required"),
   email: Yup.string()
     .email("Invalid email address")
     .required("Email is required"),
@@ -52,10 +55,20 @@ const validationSchema = Yup.object().shape({
 
 const FamilyList = () => {
   const [isModelOpen, setisModelOpen] = useState(false);
-  const [paymentStatus, setPaymentStatus] = useState(
-    Array(data.length).fill("Pending") // Initialize with default value
-  );
+  const data = useSelector((state) => state.society.allFamilies);
+  // const [paymentStatus, setPaymentStatus] = useState(
+  //   Array(data.length).fill("Pending") // Initialize with default value
+  // );
+  const { id } = useParams();
+  console.log(id);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const createFamily = (data) => dispatch(SocietyActions.createFamily(data));
+  const getAllFamilies = (data) =>
+    dispatch(SocietyActions.getAllFamilies(data));
+
+  console.log(data);
 
   const closeModal = () => {
     setisModelOpen(false);
@@ -83,12 +96,12 @@ const FamilyList = () => {
     },
   };
   const columns = [
-    { Header: "Family Name", accessor: "familyName" },
+    { Header: "Family Name", accessor: "name" },
     { Header: "Flat Number", accessor: "flatNumber" },
-    { Header: "Contact Details", accessor: "contactDetails" },
-    { Header: "Email", accessor: "email" },
-    { Header: "Members", accessor: "members" },
-    { Header: "Residents", accessor: "numResidents" },
+    { Header: "Contact Details", accessor: "contact" },
+    // { Header: "Email", accessor: "head" },
+    // { Header: "Members", accessor: "members" },
+    // { Header: "Residents", accessor: "numResidents" },
     { Header: "Total Amount to Pay", accessor: "totalAmountToPay" }, // New column
   ];
 
@@ -96,6 +109,13 @@ const FamilyList = () => {
     // Handle adding family to the data array
     // You can update the state, make an API call, etc.
     console.log("Adding family:", values);
+    createFamily({
+      name: values.familyName,
+      flatNumber: values.flatNumber,
+      head: values.email,
+      societyId: id,
+      contact: values.contact,
+    });
 
     // Close the modal after adding the family
     closeModal();
@@ -104,19 +124,28 @@ const FamilyList = () => {
     navigate(`${window.location.pathname}/${activityId}`);
   };
 
+  useEffect(() => {
+    getAllFamilies({
+      id,
+    });
+  }, []);
+
   return (
     <div className="bg-background text-text h-full">
       <div className="w-full flex justify-between mb-8 ">
         <p className="text-2xl font-bold">Family Details</p>
-        <button
-          onClick={openModal}
-          className="bg-cta text-white p-2 rounded-md"
-        >
-          Add Family
-        </button>
+        <div>
+          <button
+            onClick={openModal}
+            className="bg-cta text-white p-2 rounded-md"
+          >
+            Add Family
+          </button>
+        </div>
       </div>
-      <Table columns={columns} data={data} onViewClick={handleViewFamily} />
-
+      {data && (
+        <Table columns={columns} data={data} onViewClick={handleViewFamily} />
+      )}
       <Modal
         isOpen={isModelOpen}
         onRequestClose={closeModal}
@@ -174,7 +203,7 @@ const FamilyList = () => {
                 className="text-red-500 text-sm mt-1"
               />
             </div>
-            <div className="mb-4">
+            {/* <div className="mb-4">
               <label
                 htmlFor="members"
                 className="block text-sm font-medium text-gray-600"
@@ -212,23 +241,23 @@ const FamilyList = () => {
                 component="div"
                 className="text-red-500 text-sm mt-1"
               />
-            </div>
+            </div> */}
 
             <div className="mb-4">
               <label
-                htmlFor="contactDetails"
+                htmlFor="contact"
                 className="block text-sm font-medium text-gray-600"
               >
                 Contact Details:
               </label>
               <Field
                 type="text"
-                id="contactDetails"
-                name="contactDetails"
+                id="contact"
+                name="contact"
                 className="mt-1 bg-background p-2 w-full border-2 rounded-md"
               />
               <ErrorMessage
-                name="contactDetails"
+                name="contact"
                 component="div"
                 className="text-red-500 text-sm mt-1"
               />
@@ -239,7 +268,7 @@ const FamilyList = () => {
                 htmlFor="email"
                 className="block text-sm font-medium text-gray-600"
               >
-                Email:
+                Head Email:
               </label>
               <Field
                 type="email"

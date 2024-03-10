@@ -43,6 +43,8 @@ exports.createActivity = async (req, res, next) => {
           paid: false,
         });
 
+        family.totalAmountToPay += costPerFamily;
+
         await family.save();
       }
     }
@@ -143,6 +145,29 @@ exports.updateActivity = async (req, res, next) => {
             !activityPayment.activity.equals(updatedActivity._id)
         );
 
+        // Update totalAmountToPay for the removed family
+        const totalAmountToPay = family.activitiesPayment.reduce(
+          (total, payment) => total + payment.cost,
+          0
+        );
+
+        family.totalAmountToPay = totalAmountToPay;
+
+        await family.save();
+      }
+    }
+
+    // Update the totalAmountToPay for each family
+    for (const familyId of updatedActivity.families) {
+      const family = await Family.findById(familyId);
+
+      if (family) {
+        const totalAmountToPay = family.activitiesPayment.reduce(
+          (total, payment) => total + payment.cost,
+          0
+        );
+
+        family.totalAmountToPay = totalAmountToPay;
         await family.save();
       }
     }
@@ -174,6 +199,8 @@ exports.deleteActivity = async (req, res, next) => {
     );
     await society.save();
 
+    const activityCostPerFamily = activity.cost / activity.families.length;
+
     // Remove the activity from the activitiesPayment array in associated families
     for (const familyId of activity.families) {
       const family = await Family.findById(familyId);
@@ -182,7 +209,12 @@ exports.deleteActivity = async (req, res, next) => {
         family.activitiesPayment = family.activitiesPayment.filter(
           (activityPayment) => !activityPayment.activity.equals(activity._id)
         );
+        // Update totalAmountToPay by subtracting the cost of the deleted activity
+        // const deletedActivityCost = activity.activitiesPayment.find(
+        //   (activityPayment) => activityPayment.activity.equals(activity._id)
+        // ).cost;
 
+        family.totalAmountToPay -= activityCostPerFamily;
         await family.save();
       }
     }
@@ -193,6 +225,7 @@ exports.deleteActivity = async (req, res, next) => {
       data: activity,
     });
   } catch (error) {
+    console.log(error);
     next(new CustomError(stringConstants.serverError, 500));
   }
 };

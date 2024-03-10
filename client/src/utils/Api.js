@@ -3,6 +3,7 @@ import axios from "axios";
 const BASE_URL = "http://localhost:5000/api/v1";
 
 export const fetchData = async (endpoint, options = {}) => {
+  console.log(endpoint);
   try {
     const token = localStorage.getItem("token");
     const response = await axios.get(`${BASE_URL}/${endpoint}`, {
@@ -12,6 +13,7 @@ export const fetchData = async (endpoint, options = {}) => {
       },
       ...options,
     });
+    console.log(response);
     return response.data;
   } catch (error) {
     throw error;

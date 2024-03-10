@@ -18,9 +18,17 @@ const familySchema = new mongoose.Schema({
   numberOfResidents: {
     type: Number,
   },
+  totalAmountToPay: {
+    type: Number,
+    default: 0,
+  },
   head: {
     type: mongoose.Schema.ObjectId,
     ref: "User",
+    required: true,
+  },
+  contact: {
+    type: String,
     required: true,
   },
   society: {
