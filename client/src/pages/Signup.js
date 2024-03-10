@@ -1,20 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useSelector, useDispatch } from "react-redux";
-import * as AuthActions from "../store/auth/Actions";
+import * as AuthActions from "../store/auth/actions";
+import * as SocietyActions from "../store/society/actions";
 
 const Signup = () => {
   const [signupSuccess, setSignupSuccess] = useState(false);
   const [societyName, setSocietyName] = useState("");
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const signUp = (data) => dispatch(AuthActions.signUp(data));
+  const createSociety = (data) => dispatch(SocietyActions.createSociety(data));
   const auth = useSelector((state) => state.auth);
+  const society = useSelector((state) => state.society);
 
-  console.log(auth);
+  console.log(society);
 
   const formikSignup = useFormik({
     initialValues: {
@@ -52,6 +56,16 @@ const Signup = () => {
     }
   }, [auth?.signUpSuccess]);
 
+  useEffect(() => {
+    if (society.createSocietySuccess === true) {
+      console.log(society.societyDetails);
+      navigate(`/${society.societyDetails.society._id}`);
+    }
+    if (society.createSocietyFailure == true) {
+      console.log("error");
+    }
+  }, [society?.createSocietySuccess]);
+
   const formikSociety = useFormik({
     initialValues: {
       societyName: "",
@@ -62,6 +76,9 @@ const Signup = () => {
     onSubmit: (values) => {
       // Handle society creation logic here
       console.log("Society form submitted with values:", values);
+      createSociety({
+        name: values.societyName,
+      });
       // You can redirect or perform further actions after society creation
     },
   });

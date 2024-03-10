@@ -12,7 +12,7 @@ import {
   SIGN_OUT_SUCCESS,
   SIGN_OUT_FAILURE,
   SIGN_OUT_INIT,
-} from "./ActionTypes";
+} from "./actionTypes";
 
 const initialState = {
   userDetails: null,
@@ -38,6 +38,7 @@ const authReducer = (state = initialState, action) => {
       };
     case SIGN_UP_SUCCESS:
       console.log(action.payload);
+      localStorage.setItem("token", action.payload.token);
       return {
         ...state,
         userDetails: action.payload,

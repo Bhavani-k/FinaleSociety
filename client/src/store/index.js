@@ -25,6 +25,7 @@ const storage =
 const persistConfig = {
   key: "root",
   storage,
+  //   blacklist: ["customerAuth"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -32,7 +33,7 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 const sagaMiddleware = createSagaMiddleware();
 
 const composeEnhancers =
-  (typeof window != "undefined" && window._REDUX_DEVTOOLS_EXTENSION_COMPOSE_) ||
+  (typeof window === "object" && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) ||
   compose;
 
 const store = createStore(

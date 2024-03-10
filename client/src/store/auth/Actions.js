@@ -11,7 +11,7 @@ import {
   SIGN_OUT_SUCCESS,
   SIGN_OUT_FAILURE,
   SIGN_OUT_INIT,
-} from "./ActionTypes";
+} from "./actionTypes";
 
 export const signUp = (data) => ({
   type: SIGN_UP,

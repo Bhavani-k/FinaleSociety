@@ -34,10 +34,7 @@ exports.createSociety = async (req, res, next) => {
     await user.save();
 
     res.status(201).json({
-      success: true,
-      message: "Society created successfully",
-      data: society,
-      user: user,
+      society,
     });
   } catch (error) {
     console.log(error);

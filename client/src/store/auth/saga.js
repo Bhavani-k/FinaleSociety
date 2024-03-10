@@ -1,8 +1,8 @@
 import { takeEvery, fork, put, all, call } from "redux-saga/effects";
 
-import { SIGN_IN, SIGN_UP, SIGN_OUT } from "./ActionTypes";
+import { SIGN_IN, SIGN_UP, SIGN_OUT } from "./actionTypes";
 
-import { signUpFailure, signUpSuccess } from "./Actions";
+import { signUpFailure, signUpSuccess } from "./actions";
 import { postData } from "../../utils/Api";
 
 function* signUpFun(action) {
