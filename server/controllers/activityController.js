@@ -3,11 +3,13 @@ const Society = require("../models/society");
 const CustomError = require("../utilis/customError");
 const stringConstants = require("../utilis/strringConstants");
 const Family = require("../models/family"); // Import the Family model
+const mongoose = require("mongoose");
 
 exports.createActivity = async (req, res, next) => {
   const { name, description, cost, costCategory, date, societyId, families } =
     req.body;
-
+  console.log(">>>>>>>>>>>>>>>>>>>>>");
+  console.log(req.body);
   try {
     const society = await Society.findById(societyId);
 
@@ -234,15 +236,39 @@ exports.getOneActivity = async (req, res, next) => {
   const activityId = req.params.id;
 
   try {
-    const activity = await Activity.findById(activityId);
+    const activity = await Activity.aggregate([
+      { $match: { _id: new mongoose.Types.ObjectId(activityId) } },
+      { $unwind: "$families" },
+      {
+        $lookup: {
+          from: "families", // Assuming your family collection is named "families"
+          localField: "families",
+          foreignField: "_id",
+          as: "familyDetails",
+        },
+      },
+      { $unwind: "$familyDetails" },
+      {
+        $group: {
+          _id: "$_id",
+          name: { $first: "$name" },
+          description: { $first: "$description" },
+          costCategory: { $first: "$costCategory" },
+          date: { $first: "$date" },
+          createdBy: { $first: "$createdBy" },
+          society: { $first: "$society" },
+          families: { $push: "$familyDetails" },
+        },
+      },
+    ]);
 
-    if (!activity) {
+    if (!activity || activity.length === 0) {
       return next(new CustomError(stringConstants.activityNotFound, 404));
     }
 
     res.status(200).json({
       success: true,
-      data: activity,
+      data: activity[0], // Since it's an array, get the first element
     });
   } catch (error) {
     next(new CustomError(stringConstants.serverError, 500));
@@ -259,10 +285,55 @@ exports.getAllActivitiesOfSociety = async (req, res, next) => {
       return next(new CustomError(stringConstants.societyNotFound, 404));
     }
 
-    const allActivities = await Activity.find({ society: societyId });
+    const allActivities = await Activity.aggregate([
+      { $match: { society: new mongoose.Types.ObjectId(societyId) } },
+      { $unwind: "$families" },
+      {
+        $lookup: {
+          from: "families", // Assuming your family collection is named "families"
+          localField: "families",
+          foreignField: "_id",
+          as: "familyDetails",
+        },
+      },
+      { $unwind: "$familyDetails" },
+      {
+        $group: {
+          _id: "$_id",
+          name: { $first: "$name" },
+          description: { $first: "$description" },
+          costCategory: { $first: "$costCategory" },
+          date: { $first: "$date" },
+          createdBy: { $first: "$createdBy" },
+          society: { $first: "$society" },
+          families: { $push: "$familyDetails" },
+        },
+      },
+    ]);
 
     res.status(200).json(allActivities);
   } catch (error) {
+    next(new CustomError(stringConstants.serverError, 500));
+  }
+};
+
+exports.getAllActivitiesOfFamily = async (req, res, next) => {
+  const familyId = req.params.familyId;
+  console.log(">>>>>>>>>>>>>>>");
+  console.log(familyId);
+
+  try {
+    const family = await Family.findById(familyId);
+
+    if (!family) {
+      return next(new CustomError(stringConstants.familyNotFound, 404));
+    }
+
+    const allActivities = await Activity.find({ family: familyId });
+
+    res.status(200).json(allActivities);
+  } catch (error) {
+    // Handle server errors with a custom error message
     next(new CustomError(stringConstants.serverError, 500));
   }
 };

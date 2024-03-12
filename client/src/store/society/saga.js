@@ -7,6 +7,9 @@ import {
   GET_ALL_FAMILIES,
   GET_ALL_USER_EMAILS,
   GET_ONE_FAMILY,
+  GET_ALL_FAMILY_ACTIVITIES,
+  GET_ALL_SOCIETY_ACTIVITIES,
+  CREATE_ACTIVITY,
 } from "./actionTypes";
 
 import {
@@ -22,6 +25,14 @@ import {
   getAllUserEmailsSuccess,
   getOneFamilyFailure,
   getOneFamilySuccess,
+  getAllFamilyActivitiesInit,
+  getAllFamilyActivitiesSuccess,
+  getAllFamilyActivitiesFailure,
+  getAllSocietyActivitiesInit,
+  getAllSocietyActivitiesSuccess,
+  getAllSocietyActivitiesFailure,
+  createActivitySuccess,
+  createActivityFailure,
 } from "./actions";
 import { postData, putData, fetchData } from "../../utils/Api";
 
@@ -120,11 +131,73 @@ function* getOneFamilyFun(action) {
     yield put(getOneFamilyFailure(err));
   }
 }
+
+function* getAllFamilyActivitiesFun(action) {
+  const payload = action.payload;
+  console.log(payload);
+  try {
+    yield put(getAllFamilyActivitiesInit());
+    const response = yield call(
+      fetchData,
+      `getAllActivitiesOfFamily/${payload.familyId}`,
+      payload
+    );
+    console.log(response);
+    if (response !== undefined) {
+      yield put(getAllFamilyActivitiesSuccess(response));
+    } else {
+      yield put(getAllFamilyActivitiesFailure(response));
+    }
+  } catch (err) {
+    yield put(getAllFamilyActivitiesFailure(err));
+  }
+}
+
+// Saga for getting all society activities
+function* getAllSocietyActivitiesFun(action) {
+  const payload = action.payload;
+  console.log(payload);
+  try {
+    yield put(getAllSocietyActivitiesInit());
+    const response = yield call(
+      fetchData,
+      `getAllActivitiesOfSociety/${payload.id}`,
+      payload
+    );
+    console.log(response);
+    if (response !== undefined) {
+      yield put(getAllSocietyActivitiesSuccess(response));
+    } else {
+      yield put(getAllSocietyActivitiesFailure(response));
+    }
+  } catch (err) {
+    yield put(getAllSocietyActivitiesFailure(err));
+  }
+}
+function* createActivityFun(action) {
+  const payload = action.payload;
+  console.log(payload);
+  try {
+    const response = yield call(postData, "createActivity", payload);
+    console.log(response);
+    if (response !== undefined) {
+      yield put(createActivitySuccess(response));
+    } else {
+      yield put(createActivityFailure(response));
+    }
+  } catch (err) {
+    yield put(createActivityFailure(err));
+  }
+}
+
 export function* watchCreateSociety() {
   yield takeEvery(CREATE_SOCIETY, createSocietyFun);
 }
 export function* watchCreateFamily() {
   yield takeEvery(CREATE_FAMILY, createFamilyFun);
+}
+export function* watchCreateActivity() {
+  yield takeEvery(CREATE_ACTIVITY, createActivityFun);
 }
 
 export function* watchUpdateFamily() {
@@ -143,6 +216,14 @@ export function* watchGetOneFamily() {
   yield takeEvery(GET_ONE_FAMILY, getOneFamilyFun);
 }
 
+export function* watchGetAllFamilyActivities() {
+  yield takeEvery(GET_ALL_FAMILY_ACTIVITIES, getAllFamilyActivitiesFun);
+}
+
+export function* watchGetAllSocietyActivities() {
+  yield takeEvery(GET_ALL_SOCIETY_ACTIVITIES, getAllSocietyActivitiesFun);
+}
+
 function* societySaga() {
   yield all([
     fork(watchCreateSociety),
@@ -152,6 +233,9 @@ function* societySaga() {
     fork(watchGetAllFamilies),
     fork(watchGetAllUserEmails),
     fork(watchGetOneFamily),
+    fork(watchGetAllFamilyActivities),
+    fork(watchGetAllSocietyActivities),
+    fork(watchCreateActivity),
   ]);
 }
 

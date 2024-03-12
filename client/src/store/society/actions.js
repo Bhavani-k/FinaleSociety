@@ -39,6 +39,14 @@ import {
   GET_ONE_ACTIVITY_INIT,
   GET_ONE_ACTIVITY_SUCCESS,
   GET_ONE_ACTIVITY_FAILURE,
+  GET_ALL_FAMILY_ACTIVITIES,
+  GET_ALL_FAMILY_ACTIVITIES_INIT,
+  GET_ALL_FAMILY_ACTIVITIES_SUCCESS,
+  GET_ALL_FAMILY_ACTIVITIES_FAILURE,
+  GET_ALL_SOCIETY_ACTIVITIES,
+  GET_ALL_SOCIETY_ACTIVITIES_INIT,
+  GET_ALL_SOCIETY_ACTIVITIES_SUCCESS,
+  GET_ALL_SOCIETY_ACTIVITIES_FAILURE,
 } from "./actionTypes";
 
 export const createSociety = (data) => ({
@@ -244,5 +252,45 @@ export const getOneActivitySuccess = (data) => ({
 
 export const getOneActivityFailure = (data) => ({
   type: GET_ONE_ACTIVITY_FAILURE,
+  payload: data,
+});
+// Actions for getting all family activities
+export const getAllFamilyActivities = (data) => ({
+  type: GET_ALL_FAMILY_ACTIVITIES,
+  payload: data,
+});
+
+export const getAllFamilyActivitiesInit = (data) => ({
+  type: GET_ALL_FAMILY_ACTIVITIES_INIT,
+  payload: data,
+});
+
+export const getAllFamilyActivitiesSuccess = (data) => ({
+  type: GET_ALL_FAMILY_ACTIVITIES_SUCCESS,
+  payload: data,
+});
+
+export const getAllFamilyActivitiesFailure = (data) => ({
+  type: GET_ALL_FAMILY_ACTIVITIES_FAILURE,
+  payload: data,
+});
+// Actions for getting all society activities
+export const getAllSocietyActivities = (data) => ({
+  type: GET_ALL_SOCIETY_ACTIVITIES,
+  payload: data,
+});
+
+export const getAllSocietyActivitiesInit = (data) => ({
+  type: GET_ALL_SOCIETY_ACTIVITIES_INIT,
+  payload: data,
+});
+
+export const getAllSocietyActivitiesSuccess = (data) => ({
+  type: GET_ALL_SOCIETY_ACTIVITIES_SUCCESS,
+  payload: data,
+});
+
+export const getAllSocietyActivitiesFailure = (data) => ({
+  type: GET_ALL_SOCIETY_ACTIVITIES_FAILURE,
   payload: data,
 });

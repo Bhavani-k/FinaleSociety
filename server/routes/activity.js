@@ -6,6 +6,7 @@ const {
   deleteActivity,
   getOneActivity,
   getAllActivitiesOfSociety,
+  getAllActivitiesOfFamily,
 } = require("../controllers/activityController");
 const { isLoggedIn } = require("../middlewares/user");
 
@@ -17,5 +18,8 @@ router.route("/getOneActivity/:id").get(isLoggedIn, getOneActivity);
 router
   .route("/getAllActivitiesOfSociety/:societyId")
   .get(isLoggedIn, getAllActivitiesOfSociety);
+router
+  .route("/getAllActivitiesOfFamily/:familyId")
+  .get(isLoggedIn, getAllActivitiesOfFamily);
 
 module.exports = router;

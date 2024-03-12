@@ -39,7 +39,16 @@ import {
   GET_ONE_ACTIVITY_INIT,
   GET_ONE_ACTIVITY_SUCCESS,
   GET_ONE_ACTIVITY_FAILURE,
+  GET_ALL_FAMILY_ACTIVITIES,
+  GET_ALL_FAMILY_ACTIVITIES_INIT,
+  GET_ALL_FAMILY_ACTIVITIES_SUCCESS,
+  GET_ALL_FAMILY_ACTIVITIES_FAILURE,
+  GET_ALL_SOCIETY_ACTIVITIES,
+  GET_ALL_SOCIETY_ACTIVITIES_INIT,
+  GET_ALL_SOCIETY_ACTIVITIES_SUCCESS,
+  GET_ALL_SOCIETY_ACTIVITIES_FAILURE,
 } from "./actionTypes";
+
 const initialState = {
   societyDetails: null,
   createSocietySuccess: false,
@@ -99,6 +108,18 @@ const initialState = {
   getOneActivitySuccess: false,
   getOneActivityFailure: false,
   getOneActivityError: null,
+
+  // Initial state properties for GET_ALL_FAMILY_ACTIVITIES
+  allFamilyActivities: null,
+  getAllFamilyActivitiesSuccess: false,
+  getAllFamilyActivitiesFailure: false,
+  getAllFamilyActivitiesError: null,
+
+  // Initial state properties for GET_ALL_SOCIETY_ACTIVITIES
+  allSocietyActivities: null,
+  getAllSocietyActivitiesSuccess: false,
+  getAllSocietyActivitiesFailure: false,
+  getAllSocietyActivitiesError: null,
 };
 
 const societyReducer = (state = initialState, action) => {
@@ -357,9 +378,6 @@ const societyReducer = (state = initialState, action) => {
         getOneFamilyFailure: false,
         oneFamily: null,
       };
-
-    // Add cases for GET_ALL_ACTIVITIES, GET_ONE_ACTIVITY, etc.
-
     case GET_ALL_ACTIVITIES:
       console.log(action.payload);
       return {
@@ -422,6 +440,68 @@ const societyReducer = (state = initialState, action) => {
         getOneActivitySuccess: false,
         getOneActivityFailure: false,
         oneActivity: null,
+      };
+    case GET_ALL_FAMILY_ACTIVITIES:
+      return {
+        ...state,
+        allFamilyActivities: null,
+        getAllFamilyActivitiesSuccess: false,
+        getAllFamilyActivitiesFailure: false,
+        getAllFamilyActivitiesError: null,
+      };
+    case GET_ALL_FAMILY_ACTIVITIES_SUCCESS:
+      return {
+        ...state,
+        allFamilyActivities: action.payload,
+        getAllFamilyActivitiesSuccess: true,
+        getAllFamilyActivitiesFailure: false,
+        getAllFamilyActivitiesError: null,
+      };
+    case GET_ALL_FAMILY_ACTIVITIES_FAILURE:
+      return {
+        ...state,
+        getAllFamilyActivitiesError: action.payload,
+        getAllFamilyActivitiesSuccess: false,
+        getAllFamilyActivitiesFailure: true,
+      };
+    case GET_ALL_FAMILY_ACTIVITIES_INIT:
+      return {
+        ...state,
+        getAllFamilyActivitiesError: null,
+        getAllFamilyActivitiesSuccess: false,
+        getAllFamilyActivitiesFailure: false,
+        allFamilyActivities: null,
+      };
+    case GET_ALL_SOCIETY_ACTIVITIES:
+      return {
+        ...state,
+        allSocietyActivities: null,
+        getAllSocietyActivitiesSuccess: false,
+        getAllSocietyActivitiesFailure: false,
+        getAllSocietyActivitiesError: null,
+      };
+    case GET_ALL_SOCIETY_ACTIVITIES_SUCCESS:
+      return {
+        ...state,
+        allSocietyActivities: action.payload,
+        getAllSocietyActivitiesSuccess: true,
+        getAllSocietyActivitiesFailure: false,
+        getAllSocietyActivitiesError: null,
+      };
+    case GET_ALL_SOCIETY_ACTIVITIES_FAILURE:
+      return {
+        ...state,
+        getAllSocietyActivitiesError: action.payload,
+        getAllSocietyActivitiesSuccess: false,
+        getAllSocietyActivitiesFailure: true,
+      };
+    case GET_ALL_SOCIETY_ACTIVITIES_INIT:
+      return {
+        ...state,
+        getAllSocietyActivitiesError: null,
+        getAllSocietyActivitiesSuccess: false,
+        getAllSocietyActivitiesFailure: false,
+        allSocietyActivities: null,
       };
 
     default:

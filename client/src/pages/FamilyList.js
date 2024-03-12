@@ -8,31 +8,7 @@ import { Link, useNavigate } from "react-router-dom";
 import * as SocietyActions from "../store/society/actions";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
-
-const data = [
-  {
-    familyName: "Gupta family",
-    flatNumber: "A101",
-    numResidents: 4,
-    contact: "+1 123 456 7890",
-    email: "john.doe@example.com",
-    members: "ganesh, ramu, akku",
-    totalAmountToPay: 2000, // New column
-    paymentStatus: "Pending", // New column
-  },
-  {
-    familyName: "bansal",
-    flatNumber: "B202",
-    numResidents: 3,
-    contact: "+1 987 654 3210",
-    email: "jane.smith@example.com",
-    members: "ganesh, ramu, akku",
-    totalAmountToPay: 1500, // New column
-    paymentStatus: "Pending", // New column
-  },
-  // Add more data as needed
-];
-
+import { ToastContainer, toast } from "react-toastify";
 const initialValues = {
   familyName: "",
   flatNumber: "",
@@ -56,6 +32,7 @@ const validationSchema = Yup.object().shape({
 const FamilyList = () => {
   const [isModelOpen, setisModelOpen] = useState(false);
   const data = useSelector((state) => state.society.allFamilies);
+  const society = useSelector((state) => state.society);
   // const [paymentStatus, setPaymentStatus] = useState(
   //   Array(data.length).fill("Pending") // Initialize with default value
   // );
@@ -128,7 +105,13 @@ const FamilyList = () => {
     getAllFamilies({
       id,
     });
-  }, []);
+    if (SocietyActions.createFamilySuccess === true) {
+      toast("family created successfully");
+    }
+    if (SocietyActions.createActivityFailure === true) {
+      toast("family creation failed");
+    }
+  }, [society?.createFamilySuccess]);
 
   return (
     <div className="bg-background text-text h-full">
@@ -294,6 +277,7 @@ const FamilyList = () => {
           </Form>
         </Formik>
       </Modal>
+      <ToastContainer />
     </div>
   );
 };

@@ -21,9 +21,9 @@ function App() {
         <Route path="/:id" element={<AdminDashboard />}>
           <Route path="" element={<Dashboard />} />
           <Route path="activityList" element={<ActivityList />} />
-          <Route path="activityList/:nestedId" element={<Activity />} />
+          <Route path="activityList/:activityId" element={<Activity />} />
           <Route path="familyList" element={<FamilyList />} />
-          <Route path="familyList/:nestedId" element={<Family />} />
+          <Route path="familyList/:familyId" element={<Family />} />
         </Route>
       </Routes>
     </Router>
