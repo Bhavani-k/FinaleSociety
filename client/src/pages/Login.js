@@ -1,23 +1,44 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useSelector, useDispatch } from "react-redux";
+import * as AuthActions from "../store/auth/actions";
 
 const Login = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const auth = useSelector((state) => state.auth);
+  const signIn = (data) => dispatch(AuthActions.signIn(data));
   const formik = useFormik({
     initialValues: {
-      email: "",
+      username: "",
       password: "",
     },
     validationSchema: Yup.object({
-      email: Yup.string().email("Invalid email address").required("Required"),
+      username: Yup.string().required("Required"),
       password: Yup.string().required("Required"),
     }),
     onSubmit: (values) => {
       // Handle login logic here
       console.log("Login form submitted with values:", values);
+      signIn({
+        username: values.username,
+        password: values.password,
+      });
     },
   });
+
+  useEffect(() => {
+    if (auth?.signInSuccess === true) {
+      toast("Sign In success");
+      console.log(">>>>>>>>>>>>>>>>>");
+      console.log(auth.userDetails.user.society);
+      navigate(`/${auth.userDetails.user.society}`);
+    }
+  }, [auth?.signInSuccess]);
 
   return (
     <div className="min-h-screen flex flex-col items-center gap-16 px-6 text-grey bg-background w-full">
@@ -31,25 +52,25 @@ const Login = () => {
         <form onSubmit={formik.handleSubmit}>
           <div className="mb-4">
             <label
-              htmlFor="email"
+              htmlFor="username"
               className="block text-sm font-medium text-gray-600"
             >
-              Email
+              Username
             </label>
             <input
-              id="email"
-              name="email"
+              id="username"
+              name="username"
               type="text"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              value={formik.values.email}
+              value={formik.values.username}
               className={`mt-1 bg-background p-2 w-full border-2 rounded-md ${
-                formik.errors.email ? "border-red-500" : ""
+                formik.errors.username ? "border-red-500" : ""
               }`}
             />
-            {formik.touched.email && formik.errors.email && (
+            {formik.touched.username && formik.errors.username && (
               <div className="text-red-500 text-sm mt-1">
-                {formik.errors.email}
+                {formik.errors.username}
               </div>
             )}
           </div>

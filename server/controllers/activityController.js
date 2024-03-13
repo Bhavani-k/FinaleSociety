@@ -257,6 +257,7 @@ exports.getOneActivity = async (req, res, next) => {
           date: { $first: "$date" },
           createdBy: { $first: "$createdBy" },
           society: { $first: "$society" },
+          cost: { $first: "$cost" },
           families: { $push: "$familyDetails" },
         },
       },
@@ -271,6 +272,7 @@ exports.getOneActivity = async (req, res, next) => {
       data: activity[0], // Since it's an array, get the first element
     });
   } catch (error) {
+    console.log(error);
     next(new CustomError(stringConstants.serverError, 500));
   }
 };
@@ -307,6 +309,7 @@ exports.getAllActivitiesOfSociety = async (req, res, next) => {
           createdBy: { $first: "$createdBy" },
           society: { $first: "$society" },
           families: { $push: "$familyDetails" },
+          cost: { $first: "$cost" },
         },
       },
     ]);

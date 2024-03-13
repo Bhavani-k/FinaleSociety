@@ -61,6 +61,67 @@ const authReducer = (state = initialState, action) => {
         userDetails: null,
       };
 
+    case SIGN_IN:
+      return {
+        ...state,
+        userDetails: null,
+        signInSuccess: false,
+        signInFailure: false,
+      };
+    case SIGN_IN_SUCCESS:
+      localStorage.setItem("token", action.payload.token);
+      return {
+        ...state,
+        userDetails: action.payload,
+        signInSuccess: true,
+        signInFailure: false,
+      };
+    case SIGN_IN_FAILURE:
+      return {
+        ...state,
+        signInError: action.payload,
+        signInSuccess: false,
+        signInFailure: true,
+      };
+    case SIGN_IN_INIT:
+      return {
+        ...state,
+        signInError: null,
+        signInSuccess: false,
+        signInFailure: false,
+        userDetails: null,
+      };
+
+    case SIGN_OUT:
+      console.log(">>>>>>>>>>>>>");
+      return {
+        ...state,
+        signOutSuccess: false,
+        signOutFailure: false,
+      };
+    case SIGN_OUT_SUCCESS:
+      localStorage.clear();
+      return {
+        ...state,
+        userDetails: null,
+        signOutSuccess: true,
+        signOutFailure: false,
+      };
+    case SIGN_OUT_FAILURE:
+      return {
+        ...state,
+        signOutError: action.payload,
+        signOutSuccess: false,
+        signOutFailure: true,
+      };
+    case SIGN_OUT_INIT:
+      return {
+        ...state,
+        signOutError: null,
+        signOutSuccess: false,
+        signOutFailure: false,
+      };
+
     default:
       return state;
   }

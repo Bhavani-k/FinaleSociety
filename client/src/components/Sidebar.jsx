@@ -1,11 +1,18 @@
-import React, { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { MdOutlineClose, MdMenu, MdOutlineDashboard } from "react-icons/md";
-
 import { FiHome, FiActivity, FiLogIn } from "react-icons/fi";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useSelector, useDispatch } from "react-redux";
+import * as AuthActions from "../store/auth/actions";
 
 const Sidebar = () => {
   const [isCollapsed, setCollapsed] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const signOut = (data) => dispatch(AuthActions.signOut(data));
+  const auth = useSelector((state) => state.auth);
 
   const { id } = useParams();
 
@@ -13,6 +20,16 @@ const Sidebar = () => {
     setCollapsed(!isCollapsed);
     // Additional logic for toggling sidebar
   };
+
+  const handleLogOut = () => {
+    signOut();
+  };
+
+  useEffect(() => {
+    if (auth?.signOutSuccess === true) {
+      navigate("/");
+    }
+  }, [auth?.signOutSuccess]);
 
   return (
     <div
@@ -28,9 +45,9 @@ const Sidebar = () => {
                 <MdMenu />
               </button>
             </div>
-            <Link to={`/${id}`} className="text-white flex items-center mb-2">
+            {/* <Link to={`/${id}`} className="text-white flex items-center mb-2">
               <MdOutlineDashboard className="mr-2" />
-            </Link>
+            </Link> */}
             <Link
               to={`/${id}/activityList`}
               className="text-white flex items-center mb-2"
@@ -61,10 +78,10 @@ const Sidebar = () => {
                 <MdOutlineClose />
               </button>
             </div>
-            <Link to={`/${id}/`} className="text-white flex items-center mb-2">
+            {/* <Link to={`/${id}/`} className="text-white flex items-center mb-2">
               <MdOutlineDashboard className="mr-2" />
               Dashboard
-            </Link>
+            </Link> */}
             <Link
               to={`/${id}/activityList`}
               className="text-white flex items-center mb-2"
@@ -81,10 +98,10 @@ const Sidebar = () => {
             </Link>
           </div>
           <div>
-            <Link to={`/${id}/logout`} className="text-white flex items-center">
+            <p onClick={handleLogOut} className="text-white flex items-center">
               <FiLogIn className="mr-2" />
               Log out
-            </Link>
+            </p>
           </div>
         </>
       )}

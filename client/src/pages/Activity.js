@@ -57,25 +57,25 @@ const Activity = () => {
         </select>
       ),
     },
-    {
-      Header: "Action",
-      accessor: "action", // Use a unique accessor for Action
-      Cell: ({ row }) => (
-        <div>
-          <button
-            className={`${
-              paymentStatus[row.original.id - 1] === "Paid"
-                ? "bg-gray-400"
-                : "bg-primary"
-            } text-white py-1 px-2 rounded-md`}
-            disabled={paymentStatus[row.original.id - 1] === "Paid"}
-            onClick={() => handlePaymentReminder(row.original.id - 1)}
-          >
-            Remind
-          </button>
-        </div>
-      ),
-    },
+    // {
+    //   Header: "Action",
+    //   accessor: "action", // Use a unique accessor for Action
+    //   Cell: ({ row }) => (
+    //     <div>
+    //       <button
+    //         className={`${
+    //           paymentStatus[row.original.id - 1] === "Paid"
+    //             ? "bg-gray-400"
+    //             : "bg-primary"
+    //         } text-white py-1 px-2 rounded-md`}
+    //         disabled={paymentStatus[row.original.id - 1] === "Paid"}
+    //         onClick={() => handlePaymentReminder(row.original.id - 1)}
+    //       >
+    //         Remind
+    //       </button>
+    //     </div>
+    //   ),
+    // },
   ];
 
   return (
