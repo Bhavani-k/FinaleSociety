@@ -47,6 +47,22 @@ import {
   GET_ALL_SOCIETY_ACTIVITIES_INIT,
   GET_ALL_SOCIETY_ACTIVITIES_SUCCESS,
   GET_ALL_SOCIETY_ACTIVITIES_FAILURE,
+  UPDATE_PAYMENT_STATUS,
+  UPDATE_PAYMENT_STATUS_FAILURE,
+  UPDATE_PAYMENT_STATUS_INIT,
+  UPDATE_PAYMENT_STATUS_SUCCESS,
+  CREATE_INVOICE,
+  CREATE_INVOICE_INIT,
+  CREATE_INVOICE_SUCCESS,
+  CREATE_INVOICE_FAILURE,
+  UPDATE_INVOICE,
+  UPDATE_INVOICE_INIT,
+  UPDATE_INVOICE_SUCCESS,
+  UPDATE_INVOICE_FAILURE,
+  GET_INVOICE_LIST,
+  GET_INVOICE_LIST_INIT,
+  GET_INVOICE_LIST_SUCCESS,
+  GET_INVOICE_LIST_FAILURE,
 } from "./actionTypes";
 
 export const createSociety = (data) => ({
@@ -293,4 +309,84 @@ export const getAllSocietyActivitiesSuccess = (data) => ({
 export const getAllSocietyActivitiesFailure = (data) => ({
   type: GET_ALL_SOCIETY_ACTIVITIES_FAILURE,
   payload: data,
+});
+
+export const updatePaymentStatus = (data) => ({
+  type: UPDATE_PAYMENT_STATUS,
+  payload: data,
+});
+export const updatePaymentStatusSuccess = (data) => ({
+  type: UPDATE_PAYMENT_STATUS_SUCCESS,
+  payload: data,
+});
+
+export const updatePaymentStatusFailure = (data) => ({
+  type: UPDATE_PAYMENT_STATUS_FAILURE,
+  payload: data,
+});
+
+export const updatePaymentStatusInit = (data) => ({
+  type: UPDATE_PAYMENT_STATUS_INIT,
+  payload: data,
+});
+
+// Action creators for creating an invoice
+export const createInvoice = (data) => ({
+  type: CREATE_INVOICE,
+  payload: data,
+});
+
+export const createInvoiceInit = (data) => ({
+  type: CREATE_INVOICE_INIT,
+  payload: data,
+});
+
+export const createInvoiceSuccess = (data) => ({
+  type: CREATE_INVOICE_SUCCESS,
+  payload: data,
+});
+
+export const createInvoiceFailure = (data) => ({
+  type: CREATE_INVOICE_FAILURE,
+  payload: data,
+});
+
+// Action creators for updating an invoice
+export const updateInvoice = (data) => ({
+  type: UPDATE_INVOICE,
+  payload: data,
+});
+
+export const updateInvoiceInit = (data) => ({
+  type: UPDATE_INVOICE_INIT,
+  payload: data,
+});
+
+export const updateInvoiceSuccess = (data) => ({
+  type: UPDATE_INVOICE_SUCCESS,
+  payload: data,
+});
+
+export const updateInvoiceFailure = (data) => ({
+  type: UPDATE_INVOICE_FAILURE,
+  payload: data,
+});
+
+// Action creators for getting a list of invoices
+export const getInvoiceList = () => ({
+  type: GET_INVOICE_LIST,
+});
+
+export const getInvoiceListInit = () => ({
+  type: GET_INVOICE_LIST_INIT,
+});
+
+export const getInvoiceListSuccess = (data) => ({
+  type: GET_INVOICE_LIST_SUCCESS,
+  payload: data,
+});
+
+export const getInvoiceListFailure = (error) => ({
+  type: GET_INVOICE_LIST_FAILURE,
+  payload: error,
 });

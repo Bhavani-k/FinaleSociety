@@ -7,3 +7,5 @@ export { default as ActivityList } from "./ActivityList";
 export { default as Activity } from "./Activity";
 export { default as Family } from "./Family";
 export { default as Dashboard } from "./Dashboard";
+export { default as InvoiceList } from "./InvoiceList";
+export { default as Invoices } from "./Invoices";

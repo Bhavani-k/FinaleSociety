@@ -10,6 +10,11 @@ import {
   GET_ALL_FAMILY_ACTIVITIES,
   GET_ALL_SOCIETY_ACTIVITIES,
   CREATE_ACTIVITY,
+  GET_ONE_ACTIVITY,
+  UPDATE_PAYMENT_STATUS,
+  CREATE_INVOICE,
+  UPDATE_INVOICE,
+  GET_INVOICE_LIST,
 } from "./actionTypes";
 
 import {
@@ -33,6 +38,16 @@ import {
   getAllSocietyActivitiesFailure,
   createActivitySuccess,
   createActivityFailure,
+  getOneActivityFailure,
+  getOneActivitySuccess,
+  updatePaymentStatusSuccess,
+  updatePaymentStatusFailure,
+  createInvoiceFailure,
+  createInvoiceSuccess,
+  updateInvoiceFailure,
+  updateInvoiceSuccess,
+  getInvoiceListFailure,
+  getInvoiceListSuccess,
 } from "./actions";
 import { postData, putData, fetchData } from "../../utils/Api";
 
@@ -132,6 +147,26 @@ function* getOneFamilyFun(action) {
   }
 }
 
+function* getOneActivityFun(action) {
+  const payload = action.payload;
+  console.log(payload);
+  try {
+    const response = yield call(
+      fetchData,
+      `getOneActivity/${payload.id}`,
+      payload
+    );
+    console.log(response);
+    if (response !== undefined) {
+      yield put(getOneActivitySuccess(response));
+    } else {
+      yield put(getOneActivityFailure(response));
+    }
+  } catch (err) {
+    yield put(getOneActivityFailure(err));
+  }
+}
+
 function* getAllFamilyActivitiesFun(action) {
   const payload = action.payload;
   console.log(payload);
@@ -190,6 +225,74 @@ function* createActivityFun(action) {
   }
 }
 
+function* updatePaymentStatusFun(action) {
+  const payload = action.payload;
+  console.log(">>>>>>>>>>>");
+  console.log(payload);
+  try {
+    const response = yield call(
+      putData,
+      `updatePaymentStatus/${payload.id}`,
+      payload.data
+    );
+    if (response !== undefined) {
+      yield put(updatePaymentStatusSuccess(response));
+    } else {
+      yield put(updatePaymentStatusFailure(response));
+    }
+  } catch (err) {
+    yield put(updatePaymentStatusFailure(err));
+  }
+}
+function* createInvoiceFun(action) {
+  const payload = action.payload;
+  console.log(payload);
+  try {
+    const response = yield call(postData, "createInvoice", payload);
+    console.log(response);
+    if (response !== undefined) {
+      yield put(createInvoiceSuccess(response));
+    } else {
+      yield put(createInvoiceFailure(response));
+    }
+  } catch (err) {
+    yield put(createInvoiceFailure(err));
+  }
+}
+
+function* updateInvoicFun(action) {
+  const payload = action.payload;
+  console.log(payload);
+  try {
+    const response = yield call(
+      putData,
+      `updateInvoice/${payload.id}`,
+      payload.data
+    );
+    console.log(response);
+    if (response !== undefined) {
+      yield put(updateInvoiceSuccess(response));
+    } else {
+      yield put(updateInvoiceFailure(response));
+    }
+  } catch (err) {
+    yield put(updateInvoiceFailure(err));
+  }
+}
+function* getInvoiceListFun() {
+  try {
+    const response = yield call(fetchData, "getAllInvoices");
+    console.log(response);
+    if (response !== undefined) {
+      yield put(getInvoiceListSuccess(response));
+    } else {
+      yield put(getInvoiceListFailure(response));
+    }
+  } catch (err) {
+    yield put(getInvoiceListFailure(err));
+  }
+}
+
 export function* watchCreateSociety() {
   yield takeEvery(CREATE_SOCIETY, createSocietyFun);
 }
@@ -223,10 +326,30 @@ export function* watchGetAllFamilyActivities() {
 export function* watchGetAllSocietyActivities() {
   yield takeEvery(GET_ALL_SOCIETY_ACTIVITIES, getAllSocietyActivitiesFun);
 }
+export function* watchGetOneActivity() {
+  yield takeEvery(GET_ONE_ACTIVITY, getOneActivityFun);
+}
+export function* watchUpdatePaymentStatus() {
+  yield takeEvery(UPDATE_PAYMENT_STATUS, updatePaymentStatusFun);
+}
+export function* watchCreateInvoice() {
+  yield takeEvery(CREATE_INVOICE, createInvoiceFun);
+}
+
+export function* watchUpdateInvoice() {
+  yield takeEvery(UPDATE_INVOICE, updateInvoicFun);
+}
+
+export function* watchGetInvoiceList() {
+  yield takeEvery(GET_INVOICE_LIST, getInvoiceListFun);
+}
 
 function* societySaga() {
   yield all([
+    fork(watchCreateInvoice),
+    fork(watchUpdateInvoice),
     fork(watchCreateSociety),
+    fork(watchGetInvoiceList),
     fork(watchCreateSociety),
     fork(watchCreateFamily),
     fork(watchUpdateFamily),
@@ -236,6 +359,8 @@ function* societySaga() {
     fork(watchGetAllFamilyActivities),
     fork(watchGetAllSocietyActivities),
     fork(watchCreateActivity),
+    fork(watchGetOneActivity),
+    fork(watchUpdatePaymentStatus),
   ]);
 }
 

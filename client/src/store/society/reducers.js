@@ -47,9 +47,30 @@ import {
   GET_ALL_SOCIETY_ACTIVITIES_INIT,
   GET_ALL_SOCIETY_ACTIVITIES_SUCCESS,
   GET_ALL_SOCIETY_ACTIVITIES_FAILURE,
+  UPDATE_PAYMENT_STATUS,
+  UPDATE_PAYMENT_STATUS_FAILURE,
+  UPDATE_PAYMENT_STATUS_INIT,
+  UPDATE_PAYMENT_STATUS_SUCCESS,
+  CREATE_INVOICE,
+  CREATE_INVOICE_INIT,
+  CREATE_INVOICE_SUCCESS,
+  CREATE_INVOICE_FAILURE,
+  UPDATE_INVOICE,
+  UPDATE_INVOICE_INIT,
+  UPDATE_INVOICE_SUCCESS,
+  UPDATE_INVOICE_FAILURE,
+  GET_INVOICE_LIST,
+  GET_INVOICE_LIST_INIT,
+  GET_INVOICE_LIST_SUCCESS,
+  GET_INVOICE_LIST_FAILURE,
 } from "./actionTypes";
 
 const initialState = {
+  updatePaymentStatus: null,
+  updatePaymentStatusSuccess: false,
+  updatePaymentStatusFailure: false,
+  updatePaymentStatusError: false,
+
   societyDetails: null,
   createSocietySuccess: false,
   createSocietyFailure: false,
@@ -120,6 +141,24 @@ const initialState = {
   getAllSocietyActivitiesSuccess: false,
   getAllSocietyActivitiesFailure: false,
   getAllSocietyActivitiesError: null,
+
+  // Initial state properties for creating an invoice
+  createdInvoice: null,
+  createInvoiceSuccess: false,
+  createInvoiceFailure: false,
+  createInvoiceError: null,
+
+  // Initial state properties for updating an invoice
+  updatedInvoice: null,
+  updateInvoiceSuccess: false,
+  updateInvoiceFailure: false,
+  updateInvoiceError: null,
+
+  // Initial state properties for getting a list of invoices
+  invoiceList: [],
+  getInvoiceListSuccess: false,
+  getInvoiceListFailure: false,
+  getInvoiceListError: null,
 };
 
 const societyReducer = (state = initialState, action) => {
@@ -502,6 +541,135 @@ const societyReducer = (state = initialState, action) => {
         getAllSocietyActivitiesSuccess: false,
         getAllSocietyActivitiesFailure: false,
         allSocietyActivities: null,
+      };
+    case UPDATE_PAYMENT_STATUS:
+      return {
+        ...state,
+        updatePaymentStatus: null,
+        updatePaymentStatusSuccess: false,
+        updatePaymentStatusFailure: false,
+        updatePaymentStatusError: false,
+      };
+    case UPDATE_PAYMENT_STATUS_SUCCESS:
+      return {
+        ...state,
+        updatePaymentStatus: action.payload,
+        updatePaymentStatusSuccess: true,
+        updatePaymentStatusFailure: false,
+        updatePaymentStatusError: false,
+      };
+    case UPDATE_PAYMENT_STATUS_FAILURE:
+      return {
+        ...state,
+        updatePaymentStatus: null,
+        updatePaymentStatusSuccess: false,
+        updatePaymentStatusFailure: true,
+        updatePaymentStatusError: action.payload,
+      };
+    case UPDATE_PAYMENT_STATUS_INIT:
+      return {
+        ...state,
+        updatePaymentStatus: null,
+        updatePaymentStatusSuccess: false,
+        updatePaymentStatusFailure: false,
+        updatePaymentStatusError: false,
+      };
+    // Reducer for creating an invoice
+    case CREATE_INVOICE:
+      console.log(action.payload);
+      return {
+        ...state,
+        createdInvoice: null,
+        createInvoiceSuccess: false,
+        createInvoiceFailure: false,
+      };
+    case CREATE_INVOICE_SUCCESS:
+      console.log(action.payload);
+      return {
+        ...state,
+        createdInvoice: action.payload,
+        createInvoiceSuccess: true,
+        createInvoiceFailure: false,
+      };
+    case CREATE_INVOICE_FAILURE:
+      return {
+        ...state,
+        createInvoiceError: action.payload,
+        createInvoiceSuccess: false,
+        createInvoiceFailure: true,
+      };
+    case CREATE_INVOICE_INIT:
+      return {
+        ...state,
+        createInvoiceError: null,
+        createInvoiceSuccess: false,
+        createInvoiceFailure: false,
+        createdInvoice: null,
+      };
+
+    // Reducer for updating an invoice
+    case UPDATE_INVOICE:
+      console.log(action.payload);
+      return {
+        ...state,
+        updatedInvoice: null,
+        updateInvoiceSuccess: false,
+        updateInvoiceFailure: false,
+      };
+    case UPDATE_INVOICE_SUCCESS:
+      console.log(action.payload);
+      return {
+        ...state,
+        updatedInvoice: action.payload,
+        updateInvoiceSuccess: true,
+        updateInvoiceFailure: false,
+      };
+    case UPDATE_INVOICE_FAILURE:
+      return {
+        ...state,
+        updateInvoiceError: action.payload,
+        updateInvoiceSuccess: false,
+        updateInvoiceFailure: true,
+      };
+    case UPDATE_INVOICE_INIT:
+      return {
+        ...state,
+        updateInvoiceError: null,
+        updateInvoiceSuccess: false,
+        updateInvoiceFailure: false,
+        updatedInvoice: null,
+      };
+
+    // Reducer for getting a list of invoices
+    case GET_INVOICE_LIST:
+      return {
+        ...state,
+        getInvoiceListSuccess: false,
+        getInvoiceListFailure: false,
+        invoiceList: [],
+      };
+    case GET_INVOICE_LIST_SUCCESS:
+      console.log(action.payload);
+      return {
+        ...state,
+        invoiceList: action.payload,
+        getInvoiceListSuccess: true,
+        getInvoiceListFailure: false,
+      };
+    case GET_INVOICE_LIST_FAILURE:
+      return {
+        ...state,
+        getInvoiceListError: action.payload,
+        getInvoiceListSuccess: false,
+        getInvoiceListFailure: true,
+      };
+    case GET_INVOICE_LIST_INIT:
+      return {
+        ...state,
+        getInvoiceListError: null,
+        getInvoiceListSuccess: false,
+        getInvoiceListFailure: false,
+        invoiceList: [],
       };
 
     default:

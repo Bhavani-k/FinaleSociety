@@ -9,6 +9,8 @@ import {
   Login,
   Signup,
   Dashboard,
+  InvoiceList,
+  Invoices,
 } from "./pages";
 
 function App() {
@@ -24,6 +26,8 @@ function App() {
           <Route path="activityList/:activityId" element={<Activity />} />
           <Route path="familyList" element={<FamilyList />} />
           <Route path="familyList/:familyId" element={<Family />} />
+          <Route path="invoices" element={<InvoiceList />} />
+          <Route path="invoices/:invoiceId" element={<Invoices />} />
         </Route>
       </Routes>
     </Router>

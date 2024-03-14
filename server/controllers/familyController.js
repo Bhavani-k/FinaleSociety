@@ -73,6 +73,7 @@ exports.updateFamily = async (req, res, next) => {
     if (!family) {
       return next(new CustomError(stringConstants.familyNotFound, 404));
     }
+    console.log(family);
     let amount = family.totalAmountToPay;
     if (updateData.activitiesPayment) {
       const oldActivitiesPayment = family.activitiesPayment || [];
@@ -80,7 +81,7 @@ exports.updateFamily = async (req, res, next) => {
 
       for (const updatedPayment of updateData.activitiesPayment) {
         let correspondingOldPayment = oldActivitiesPayment.filter(
-          (oldPayment) => oldPayment._id === updatedPayment._id
+          (oldPayment) => oldPayment.activity === updatedPayment.activity
         );
         console.log(correspondingOldPayment);
         console.log(">>//////////////////////..");
@@ -150,5 +151,45 @@ exports.getAllFamiliesOfSociety = async (req, res, next) => {
     res.status(200).json(allFamilies);
   } catch (error) {
     next(new CustomError(stringConstants.serverError, 500));
+  }
+};
+
+exports.updatePaymentStatus = async (req, res, next) => {
+  const familyId = req.params.id;
+  const { activity, paid } = req.body;
+  const family = await Family.findById(familyId);
+
+  if (!family) {
+    return next(new CustomError(stringConstants.familyNotFound, 404));
+  }
+
+  // Find the index of the activity in the activitiesPayment array
+  const index = family.activitiesPayment.findIndex(
+    (item) => String(item.activity) === activity
+  );
+
+  if (index === -1) {
+    return next(
+      new CustomError("Activity not found in activitiesPayment", 404)
+    );
+  }
+
+  // Update the paid status of the activity
+  family.activitiesPayment[index].paid = paid;
+
+  let costDifference = family.activitiesPayment[index].paid
+    ? family.activitiesPayment[index].cost
+    : -family.activitiesPayment[index].cost;
+
+  if (costDifference < 0) costDifference = 0;
+
+  family.totalAmountToPay += costDifference;
+
+  // Save the updated family document
+  try {
+    await family.save();
+    res.status(200).json({ message: "Payment status updated successfully" });
+  } catch (err) {
+    return next(err);
   }
 };

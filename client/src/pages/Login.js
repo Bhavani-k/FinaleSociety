@@ -35,8 +35,8 @@ const Login = () => {
     if (auth?.signInSuccess === true) {
       toast("Sign In success");
       console.log(">>>>>>>>>>>>>>>>>");
-      console.log(auth.userDetails.user.society);
-      navigate(`/${auth.userDetails.user.society}`);
+
+      navigate(`/${auth?.userDetails?.user?.society}`);
     }
   }, [auth?.signInSuccess]);
 

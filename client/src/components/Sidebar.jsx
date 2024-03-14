@@ -6,7 +6,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useSelector, useDispatch } from "react-redux";
 import * as AuthActions from "../store/auth/actions";
-
+import { LiaFileInvoiceSolid } from "react-icons/lia";
 const Sidebar = () => {
   const [isCollapsed, setCollapsed] = useState(false);
   const dispatch = useDispatch();
@@ -60,6 +60,12 @@ const Sidebar = () => {
             >
               <FiHome className="mr-2" />
             </Link>
+            <Link
+              to={`/${id}/invoices`}
+              className="text-white flex items-center mb-2"
+            >
+              <LiaFileInvoiceSolid className="mr-2" />
+            </Link>
           </div>
           <div>
             <Link to={`/${id}/login`} className="text-white flex items-center">
@@ -95,6 +101,13 @@ const Sidebar = () => {
             >
               <FiHome className="mr-2" />
               Families
+            </Link>
+            <Link
+              to={`/${id}/invoices`}
+              className="text-white flex items-center mb-2"
+            >
+              <LiaFileInvoiceSolid className="mr-2" />
+              Invoices
             </Link>
           </div>
           <div>

@@ -1,19 +1,61 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Table } from "../components"; // Adjust the path based on your project structure
+import { Table } from "../components";
+import * as SocietyActions from "../store/society/actions";
+import { useSelector, useDispatch } from "react-redux";
+import { useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
-
-const families = [
-  { id: 1, name: "Family1", contact: "1234567890", amountToPay: 5000 },
-  { id: 2, name: "Family2", contact: "9876543210", amountToPay: 7500 },
-  // Add more families as needed
-];
 
 const Activity = () => {
   const navigate = useNavigate();
-  const [paymentStatus, setPaymentStatus] = useState(
-    Array(families.length).fill("Pending") // Initialize with default value
-  );
+  const dispatch = useDispatch();
+  const { activityId } = useParams();
+  const oneActivity = useSelector((state) => state?.society?.oneActivity?.data);
+  const updateFamily = (data) => dispatch(SocietyActions.updateFamily(data));
+  const families = oneActivity?.families || [];
+  const society = useSelector((state) => state?.society);
+  const [familyId, setFamilyId] = useState("");
+
+  const [paymentStatus, setPaymentStatus] = useState(() => {
+    // Initialize paymentStatus for each family based on their payment in the current activity
+    const initialPaymentStatus = {};
+    console.log(families);
+    families.forEach((family) => {
+      const activityPayment = family.activitiesPayment.find(
+        (payment) => payment.activity === activityId
+      );
+      console.log(activityPayment);
+      initialPaymentStatus[family._id] = activityPayment?.paid
+        ? "Paid"
+        : "Pending";
+    });
+    return initialPaymentStatus;
+  });
+
+  useEffect(() => {
+    if (society?.updatePaymentStatusSuccess === true) {
+      toast("update successfull");
+      getOneActivity({
+        id: activityId,
+      });
+    } else if (society?.updatePaymentStatusFailure === true) {
+      toast(" update failed, try agin later");
+    }
+  }, [society?.updatePaymentStatusSuccess]);
+  console.log(paymentStatus);
+  const getOneActivity = (data) =>
+    dispatch(SocietyActions?.getOneActivity(data));
+  const updatePaymentStatus = (data) =>
+    dispatch(SocietyActions?.updatePaymentStatus(data));
+
+  const createInvoice = (data) => dispatch(SocietyActions?.createInvoice(data));
+  console.log(oneActivity);
+
+  useEffect(() => {
+    getOneActivity({
+      id: activityId,
+    });
+  }, [activityId]);
 
   const handleBack = () => {
     var currentUrl = window.location.pathname;
@@ -23,30 +65,55 @@ const Activity = () => {
     navigate(newUrl);
   };
 
-  const handlePaymentReminder = (index) => {
-    // Handle payment reminder logic here
-    toast(`Reminder sent for ${families[index].name}`);
+  const updatePaymentStatusFun = (id, value) => {
+    console.log(id, value);
+    const data = {
+      data: { paid: value === "Paid" ? true : false, activity: activityId },
+      id,
+    };
+    console.log(data);
+    updatePaymentStatus(data);
+  };
+
+  const handleCreateInvoice = () => {
+    createInvoice({
+      paymentAmount: oneActivity.cost,
+      activityId: activityId,
+    });
+  };
+
+  const extractActivityCost = (family, activityId) => {
+    const activityPayment = family.activitiesPayment.find(
+      (payment) => payment.activity === activityId
+    );
+    return activityPayment ? activityPayment.cost : 0;
   };
 
   const columns = [
     { Header: "Family Name", accessor: "name" },
     { Header: "Contact", accessor: "contact" },
-    { Header: "Amount to Pay", accessor: "amountToPay" },
+    {
+      Header: "Amount to Pay",
+      accessor: (row) => extractActivityCost(row, activityId),
+    },
     {
       Header: "Payment Status",
       accessor: "paymentStatus",
       Cell: ({ row }) => (
         <select
           className={`p-2 rounded-md bg-background ${
-            paymentStatus[row.original.id - 1] === "Paid"
+            paymentStatus[row.original._id] === "Paid"
               ? "text-green-500"
               : "text-red-500"
           }`}
-          value={paymentStatus[row.original.id - 1]}
+          value={paymentStatus[row.original._id]}
           onChange={(e) => {
-            const newPaymentStatus = [...paymentStatus];
-            newPaymentStatus[row.original.id - 1] = e.target.value;
-            setPaymentStatus(newPaymentStatus);
+            updatePaymentStatusFun(row.original._id, e.target.value);
+            setPaymentStatus((prevStatus) => ({
+              ...prevStatus,
+              [row.original._id]: e.target.value,
+            }));
+            console.log(paymentStatus);
           }}
         >
           <option value="Pending">Pending</option>
@@ -57,52 +124,36 @@ const Activity = () => {
         </select>
       ),
     },
-    // {
-    //   Header: "Action",
-    //   accessor: "action", // Use a unique accessor for Action
-    //   Cell: ({ row }) => (
-    //     <div>
-    //       <button
-    //         className={`${
-    //           paymentStatus[row.original.id - 1] === "Paid"
-    //             ? "bg-gray-400"
-    //             : "bg-primary"
-    //         } text-white py-1 px-2 rounded-md`}
-    //         disabled={paymentStatus[row.original.id - 1] === "Paid"}
-    //         onClick={() => handlePaymentReminder(row.original.id - 1)}
-    //       >
-    //         Remind
-    //       </button>
-    //     </div>
-    //   ),
-    // },
   ];
 
   return (
-    <div className="bg-background flex flex-col gap-2">
-      <div className="w-full flex justify-between">
-        <p className="text-2xl font-bold">Floor Cleaning</p>
-        {/* <button
-          onClick={handleBack}
-          className="bg-primary text-white p-2 rounded-md"
-        >
-          Back
-        </button> */}
-      </div>
-      <div>
-        <p>
-          This month an average 5lak is used to clean the floor, which was very
-          dirty.
-        </p>
-      </div>
-      <div>{/* Money details to be added */}</div>
-      <Table
-        columns={columns}
-        data={families}
-        onViewClick={(id) => console.log(id)}
-      />
-      <ToastContainer />
-    </div>
+    <>
+      {oneActivity && (
+        <>
+          <div className="bg-background flex flex-col gap-2">
+            <div className="w-full flex justify-between">
+              <p className="text-2xl font-bold">{oneActivity.name}</p>
+              <button
+                onClick={handleCreateInvoice}
+                className="bg-cta text-white p-2 rounded-md"
+              >
+                Create Invoice
+              </button>
+            </div>
+            <div>
+              <p>{oneActivity.description}</p>
+            </div>
+            <div>{/* Money details to be added */}</div>
+            <Table
+              columns={columns}
+              data={families}
+              onViewClick={(id) => setFamilyId(id)}
+            />
+            <ToastContainer />
+          </div>
+        </>
+      )}
+    </>
   );
 };
 

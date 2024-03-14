@@ -77,8 +77,8 @@ exports.getAllInvoices = async (req, res, next) => {
     const user = await User.findById(userId);
     const society = user.society;
 
-    // Get all invoices of the society
-    const invoices = await Invoice.find({ society });
+    // Get all invoices of the society and populate the activity details
+    const invoices = await Invoice.find({ society }).populate("activity");
 
     res.status(200).json({
       success: true,
